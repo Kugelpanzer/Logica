@@ -21,9 +21,15 @@
     <ClCompile Include="src\Gate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Parser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Gate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
