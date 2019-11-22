@@ -78,7 +78,8 @@ bool Gate::CheckActive() {
 		int br = 0;
 		for (std::vector<bool*>::iterator it = connection.begin(); it != connection.end(); ++it) {
 
-			if ((**it) == !notList[br]) {
+			//break
+			if ((**it) != notList[br]) {
 				preActive= !notReverse;
 				return !notReverse;
 

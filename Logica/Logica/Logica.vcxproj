@@ -132,7 +132,7 @@
   <ItemGroup>
     <ClCompile Include="src\Gate.cpp" />
     <ClCompile Include="src\Parser.cpp" />
-    <ClCompile Include="src\Source.cpp" />
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Gate.h" />
