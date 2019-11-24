@@ -11,10 +11,9 @@ Gate::Gate()
 Gate::~Gate()
 {
 }
-Gate::Gate(std::vector<bool*> connectionList, std::vector<bool> notList, bool Reverse = false, std::string input = "0", std::string *inputAddress = NULL, std::string output = "0", std::string *outputAddress = NULL, int *weightAddress = NULL, int weight = 0)
+Gate::Gate(int id, std::vector<bool> notList, bool Reverse, std::string input , std::string *inputAddress , std::string output , std::string *outputAddress , int *weightAddress , int weight )
 {
-
-	this->connection = connectionList;
+	this->id = id;
 	this->notList = notList;
 	this->inputValue = input;
 	this->inputAddress = inputAddress;
@@ -24,33 +23,7 @@ Gate::Gate(std::vector<bool*> connectionList, std::vector<bool> notList, bool Re
 	this->weight = weight;
 	this->notReverse = !Reverse;
 }
-Gate::Gate(std::vector<bool*> connectionList, std::vector<bool> notList, bool Reverse = false, std::string input = "0", std::string *inputAddress = NULL, int *weightAddress = NULL, int weight = 0) {
-	this->connection = connectionList;
-	this->notList = notList;
-	this->inputValue = input;
-	this->inputAddress = inputAddress;
-	this->weightAddress = weightAddress;
-	this->weight = weight;
-	this->notReverse = !Reverse;
 
-}
-Gate::Gate(std::vector<bool*> connectionList, std::vector<bool> notList, bool Reverse = false, std::string output = "0", std::string *outputAddress = NULL, int *weightAddress = NULL, int weight = 0) {
-	this->connection = connectionList;
-	this->notList = notList;
-	this->outputValue = output;
-	this->outputAddress = outputAddress;
-	this->weightAddress = weightAddress;
-	this->weight = weight;
-	this->notReverse = !Reverse;
-}
-Gate::Gate(std::vector<bool*> connectionList, std::vector<bool> notList, bool Reverse = false, int *weightAddress = NULL, int weight = 0) {
-	this->connection = connectionList;
-	this->notList = notList;
-	this->weightAddress = weightAddress;
-	this->weight = weight;
-	this->notReverse = !Reverse;
-
-}
 
 
 
@@ -87,6 +60,9 @@ bool Gate::CheckActive() {
 			else if ((**it) == notList[br]) {
 
 				if (*it == connection.back()) {
+
+					//FOR TEST ONLY
+
 					preActive= notReverse;
 					return notReverse;
 				}

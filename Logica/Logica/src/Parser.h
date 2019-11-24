@@ -5,20 +5,21 @@
 #include<iostream>
 #pragma once
 
-void parse_file(std::string file_name,std::vector<Gate> &stateMachine, std::vector<std::string>&inputList, std::vector<std::string>&outputList,std::vector<int> &weightList);
+void parse_file(std::string file_name,std::vector<Gate> &stateMachine, std::vector<std::string>&inputList, std::vector<std::string>&outputList, std::vector<int> &inputWeightList, std::vector<int> &outputWeightList);
 
-void reverse_parse_file(std::string file_name);
+void reverse_parse_file(std::string file_name, std::vector<Gate> &stateMachine);
 
 
 /*
 weight has same address as outValue ,
 outPoint, inPoint is showing to which list is adrress pointing(outputList or inputList)
 */
-struct textGate {
+struct TextGate {
+	int id;
 	bool notInvert=true;
 
 	int weight = 0;
-	int outAddress = 0, inAddress = 0;
+	int outAddress = -1, inAddress = -1;
 	std::string outValue="", inValue="";
 	char outPoint='o', inPoint='i';
 
@@ -26,4 +27,4 @@ struct textGate {
 	std::vector<bool> notInverted;
 };
 
-void WriteTextGate(textGate);
+void WriteTextGate(TextGate gate);

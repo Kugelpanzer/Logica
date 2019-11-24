@@ -4,13 +4,23 @@
 #include<string>
 #include <algorithm>
 
+std::vector<std::string> str_split(std::string str, std::string delimiter);
+void WriteTextGate(TextGate gate);
+Gate FromTextGateToGate(TextGate tGate, std::vector<Gate> &stateMachine, std::vector<std::string> &inputList, std::vector<std::string> &outputList, std::vector<int> &inputWeightList, std::vector<int> &outputWeightList);
+std::vector<bool*> SetConnection(TextGate tGate, std::vector<Gate>&stateMachine);
 
 
-void parse_file(std::string file_name,std::vector<Gate> &stateMachine,std::vector<std::string> &inputList,std::vector<std::string> &outputList, std::vector<int> &weightList) {
+void parse_file(std::string file_name,std::vector<Gate> &stateMachine,std::vector<std::string> &inputList,std::vector<std::string> &outputList, std::vector<int> &inputWeightList, std::vector<int> &outputWeightList) {
 	std::string line;
-	std::ifstream myfile(file_name+".txt");
+
+	std::ifstream myfile("programs/"+file_name+".txt");
+	//std::ifstream myfile(file_name + ".txt");
+
+	std::vector<TextGate> textGateList;
+
 	if (myfile.is_open())
 	{
+
 		/*
 		if there is exclamation mark before number of gate that gate is reversed ( not gate) 
 		!1:5,2,3,4
@@ -19,23 +29,36 @@ void parse_file(std::string file_name,std::vector<Gate> &stateMachine,std::vecto
 		*/
 		while (getline(myfile, line))
 		{
-			textGate currGate;
+			TextGate currGate;
 
 			line.erase(remove_if(line.begin(), line.end(), isspace), line.end());
 			std::vector<std::string> section = str_split(line, ":");
-
+			//SECTION[0] ID
 			if (section[0].front() == '!') {
 				currGate.notInvert = false;
+				section[0].erase(0,1);
 			}
+			currGate.id = std::stoi(section[0]);
 
-			if (section.size == 2) {
 
-				if (section[1].front == '(' && section[1].back==')') {
+			//
+			if (section.size() == 2) {
 
-					section[1].erase(section[1].length - 1);
-					section[1].erase(0);
-					std::vector<std::string> arguments = str_split(line, "),");
-					arguments.back().erase(arguments.back().length - 1);
+				if (section[1].front() == '(' && section[1].back()==')') {
+					
+					section[1].pop_back();
+					section[1].erase(0,1);
+					std::vector<std::string> arguments;
+
+					 if(section[1].find("),") != std::string::npos)
+					{
+						 arguments = str_split(section[1], "),");
+						 arguments.back().pop_back();
+					}
+					else {
+						arguments.push_back(section[1]);
+					}
+					
 
 					for (int i = 0; i < arguments.size(); i++) {
 
@@ -71,15 +94,15 @@ void parse_file(std::string file_name,std::vector<Gate> &stateMachine,std::vecto
 					for (int i = 0; i <addressList.size(); i++) {
 						if (addressList[i].front() == '[' && addressList[i].back() == ']') {
 
-							addressList[i].erase(0);
-							addressList[i].erase(addressList[i].size()-1);
+							addressList[i].erase(0,1);
+							addressList[i].pop_back();
 
 							std::vector<std::string> for_args = str_split(addressList[i], ";");
 							int from = std::stoi(for_args[0]);
 							int to = std::stoi(for_args[1]);
 
 							char oper = for_args[2].front();
-							for_args[2].erase(0);
+							for_args[2].erase(0,1);
 							int step= std::stoi(for_args[2]);
 							bool notInvert = true;
 							if (for_args.size() == 4) {
@@ -140,12 +163,11 @@ void parse_file(std::string file_name,std::vector<Gate> &stateMachine,std::vecto
 								std::cout << "wrong operator";
 								break;
 							}
-							//HERE
 
 
 						}
 						else if (addressList[i].front() == '!') {
-							addressList[i].erase(0);
+							addressList[i].erase(0,1);
 							currGate.gateAddress.push_back(std::stoi(addressList[i]));
 							currGate.notInverted.push_back(false);
 						}
@@ -156,13 +178,13 @@ void parse_file(std::string file_name,std::vector<Gate> &stateMachine,std::vecto
 					}
 				}
 			}
-			else if (section.size == 3) {
+			else if (section.size() == 3) {
 
 				//SECTION 1
-				section[1].erase(section[1].length - 1);
-				section[1].erase(0);
-				std::vector<std::string> arguments = str_split(line, "),");
-				arguments.back().erase(arguments.back().length - 1);
+				section[1].pop_back();
+				section[1].erase(0,1);
+				std::vector<std::string> arguments = str_split(section[1], "),");
+				arguments.back().pop_back();
 
 				for (int i = 0; i < arguments.size(); i++) {
 
@@ -191,20 +213,20 @@ void parse_file(std::string file_name,std::vector<Gate> &stateMachine,std::vecto
 
 
 					//SECTION 2
-					std::vector<std::string> addressList = str_split(section[1], ",");
+					std::vector<std::string> addressList = str_split(section[2], ",");
 
 					for (int i = 0; i <addressList.size(); i++) {
 						if (addressList[i].front() == '[' && addressList[i].back() == ']') {
 
-							addressList[i].erase(0);
-							addressList[i].erase(addressList[i].size() - 1);
+							addressList[i].erase(0,1);
+							addressList[i].pop_back();
 
 							std::vector<std::string> for_args = str_split(addressList[i], ";");
 							int from = std::stoi(for_args[0]);
 							int to = std::stoi(for_args[1]);
 
 							char oper = for_args[2].front();
-							for_args[2].erase(0);
+							for_args[2].erase(0,1);
 							int step = std::stoi(for_args[2]);
 							bool notInvert = true;
 							if (for_args.size() == 4) {
@@ -269,7 +291,7 @@ void parse_file(std::string file_name,std::vector<Gate> &stateMachine,std::vecto
 
 						}
 						else if (addressList[i].front() == '!') {
-							addressList[i].erase(0);
+							addressList[i].erase(0,1);
 							currGate.gateAddress.push_back(std::stoi(addressList[i]));
 							currGate.notInverted.push_back(false);
 						}
@@ -282,33 +304,34 @@ void parse_file(std::string file_name,std::vector<Gate> &stateMachine,std::vecto
 
 				}
 			}
-
-			stateMachine.push_back(FromTextGateToGate(currGate,stateMachine,inputList,outputList,weightList));
+			WriteTextGate(currGate);
+			textGateList.push_back(currGate);
+			stateMachine.push_back(FromTextGateToGate(currGate,stateMachine,inputList,outputList,inputWeightList,outputWeightList));
 		}
 		//END OF WHILE
 
-
+		for (int i = 0; i < stateMachine.size(); i++) {
+			stateMachine[i].connection = SetConnection(textGateList[i], stateMachine);
+		}
 
 		myfile.close();
 	}
 }
 
-Gate FromTextGateToGate(textGate tGate, std::vector<Gate> &stateMachine, std::vector<std::string> &inputList, std::vector<std::string> &outputList, std::vector<int> &weightList) {
+
+Gate FromTextGateToGate(TextGate tGate, std::vector<Gate> &stateMachine, std::vector<std::string> &inputList, std::vector<std::string> &outputList, std::vector<int> &inputWeightList, std::vector<int> &outputWeightList) {
 	/*
-	std::vector<bool*> connectionList, 
+	std::vector<bool*> connectionList,
 	std::vector<bool> notList ,
 	bool Reverse=false,
-	std::string input="0", 
+	std::string input="0",
 	std::string *inputAddress=NULL,
-	std::string output="0", 
-	std::string *outputAddress=NULL,  
-	int *weightAddress = NULL, 
+	std::string output="0",
+	std::string *outputAddress=NULL,
+	int *weightAddress = NULL,
 	int weight = 0
 	*/
-	std::vector<bool*> connectionList;
-	for (int i = 0; i < tGate.gateAddress.size(); i++){
-		connectionList.push_back(&stateMachine[tGate.gateAddress[i]].active);
-	}
+
 	std::vector<bool> notList;
 	for (int i = 0; i < tGate.notInverted.size(); i++) {
 		notList.push_back(tGate.notInverted[i]);
@@ -318,9 +341,9 @@ Gate FromTextGateToGate(textGate tGate, std::vector<Gate> &stateMachine, std::ve
 
 	std::string inputValue = tGate.inValue;
 	std::string outputValue = tGate.outValue;
-	
+
 	std::string *inAddress, *outAddress;
-	if (tGate.inAddress == 0)
+	if (tGate.inAddress == -1)
 		inAddress = NULL;
 	else {
 		if (tGate.inPoint == 'i') {
@@ -331,10 +354,10 @@ Gate FromTextGateToGate(textGate tGate, std::vector<Gate> &stateMachine, std::ve
 		}
 	}
 
-	if (tGate.outAddress == 0)
+	if (tGate.outAddress == -1)
 		outAddress = NULL;
 	else {
-		if (tGate.inPoint == 'i') {
+		if (tGate.outPoint == 'i') {
 			outAddress = &inputList[tGate.outAddress];
 		}
 		else {
@@ -347,17 +370,71 @@ Gate FromTextGateToGate(textGate tGate, std::vector<Gate> &stateMachine, std::ve
 	int *weightAddress = NULL;
 
 
-	if (tGate.outAddress == 0)
+	if (tGate.outAddress == -1)
 		weightAddress = NULL;
-	else 
-		weightAddress = &weightList[tGate.outAddress];
-		
-	
-	return Gate(connectionList, notList, reverse, inputValue, inAddress, outputValue, outAddress, weightAddress, weight);
+	else
+		if ((tGate.outPoint == 'i')) {
+			weightAddress = &inputWeightList[tGate.outAddress];
+		}
+		else {
+			weightAddress = &outputWeightList[tGate.outAddress];
+		}
+		Gate g =Gate(tGate.id, notList, reverse, inputValue, inAddress, outputValue, outAddress, weightAddress, weight);
+
+
+
+		return g;
+
+
 
 
 }
 
+
+std::vector<bool*> SetConnection( TextGate tGate, std::vector<Gate>&stateMachine) {
+	std::vector<bool*> connectionList;
+	for (int i = 0; i < tGate.gateAddress.size(); i++) {
+		connectionList.push_back(&stateMachine[tGate.gateAddress[i]].active);
+	}
+	return connectionList;
+}
+void WriteTextGate(TextGate gate) {
+	/*
+	int id;
+	bool notInvert=true;
+
+	int weight = 0;
+	int outAddress = 0, inAddress = 0;
+	std::string outValue="", inValue="";
+	char outPoint='o', inPoint='i';
+
+	std::vector<int> gateAddress;
+	std::vector<bool> notInverted;
+	*/
+	std::cout << "\n\n ID: " << gate.id;
+	std::cout << "\n notInvert: " << gate.notInvert;
+	std::cout << "\n weight: " << gate.weight;
+
+	if (gate.outAddress != -1)
+		std::cout << "\n outAddress: " << gate.outAddress << ", outValue: " << gate.outValue << ", outPoint: " << gate.outPoint;
+
+	if (gate.inAddress != -1)
+		std::cout << "\n inAddress: " << gate.inAddress << ", inValue: " << gate.inValue << ", inPoint: " << gate.inPoint;
+
+	
+	if (gate.gateAddress.size() != 0)
+	{
+		std::cout << "\n Gates: ";
+		for (int i = 0; i < gate.gateAddress.size(); i++) {
+
+			if (gate.notInverted[i])
+				std::cout << gate.gateAddress[i] << ", ";
+			else
+				std::cout << "!" << gate.gateAddress[i] << ", ";
+		}
+	}
+
+}
 
 std::vector<std::string> str_split(std::string str, std::string delimiter) {
 
@@ -370,6 +447,10 @@ std::vector<std::string> str_split(std::string str, std::string delimiter) {
 		str.erase(0, pos + delimiter.length());
 	}
 	ret.push_back(str);
-
+	for (int i = 0; i < ret.size(); i++) {
+	}
 	return ret;
 }
+
+
+

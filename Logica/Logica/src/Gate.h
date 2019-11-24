@@ -6,13 +6,11 @@ class Gate
 
 public:
 	Gate();
-	Gate(std::vector<bool*> connectionList, std::vector<bool> notList ,bool Reverse=false, std::string input="0", std::string *inputAddress=NULL, std::string output="0", std::string *outputAddress=NULL,  int *weightAddress = NULL, int weight = 0);
-	Gate(std::vector<bool*> connectionList, std::vector<bool> notList, bool Reverse=false, std::string input = "0", std::string *inputAddress = NULL, int *weightAddress = NULL, int weight = 0);
-	Gate(std::vector<bool*> connectionList, std::vector<bool> notList, bool Reverse=false, std::string output = "0", std::string *outputAddress = NULL, int *weightAddress = NULL, int weight = 0);
-	Gate(std::vector<bool*> connectionList, std::vector<bool> notList, bool Reverse=false, int *weightAddress = NULL, int weight = 0);
+	Gate(int id, std::vector<bool> notList ,bool Reverse=false, std::string input="0", std::string *inputAddress=NULL, std::string output="0", std::string *outputAddress=NULL,  int *weightAddress = NULL, int weight = 0);
+
 
 	~Gate();
-
+	int id;
 	bool active;
 	std::string inputValue = "0"; 
 	std::string outputValue = "0";
