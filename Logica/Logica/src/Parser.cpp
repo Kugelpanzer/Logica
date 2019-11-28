@@ -304,7 +304,7 @@ void parse_file(std::string file_name,std::vector<Gate> &stateMachine,std::vecto
 
 				}
 			}
-			WriteTextGate(currGate);
+			//WriteTextGate(currGate);
 			textGateList.push_back(currGate);
 			stateMachine.push_back(FromTextGateToGate(currGate,stateMachine,inputList,outputList,inputWeightList,outputWeightList));
 		}
@@ -394,6 +394,7 @@ Gate FromTextGateToGate(TextGate tGate, std::vector<Gate> &stateMachine, std::ve
 std::vector<bool*> SetConnection( TextGate tGate, std::vector<Gate>&stateMachine) {
 	std::vector<bool*> connectionList;
 	for (int i = 0; i < tGate.gateAddress.size(); i++) {
+
 		connectionList.push_back(&stateMachine[tGate.gateAddress[i]].active);
 	}
 	return connectionList;

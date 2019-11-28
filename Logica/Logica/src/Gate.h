@@ -11,7 +11,7 @@ public:
 
 	~Gate();
 	int id;
-	bool active;
+	bool active=false;
 	std::string inputValue = "0"; 
 	std::string outputValue = "0";
 	int weight=0; //if weight is less then number alredy in list output is ignored

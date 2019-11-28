@@ -28,13 +28,15 @@ Gate::Gate(int id, std::vector<bool> notList, bool Reverse, std::string input , 
 
 
 void Gate::Activate(bool shouldPrint) {
-	if (CheckActive()) {
+	if (CheckActive()==notReverse) {
 		if ((outputAddress != NULL) && (weight >= *weightAddress))
 			*outputAddress = outputValue;
 		if (shouldPrint) {
-			std::cout << outputValue;
+			std::cout << "\n id: " << id << " value: "<<outputValue;
 		}
 	}
+
+
 }
 
 void Gate::ResetActive() {
@@ -58,7 +60,6 @@ bool Gate::CheckActive() {
 
 			}
 			else if ((**it) == notList[br]) {
-
 				if (*it == connection.back()) {
 
 					//FOR TEST ONLY
